@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5175/)",
+      "Bash(kill %1)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s http://localhost:5178)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(lsof -i :5173 -sTCP:LISTEN)",
+      "Bash(lsof -i -sTCP:LISTEN)",
+      "Bash(npm run *)",
+      "Read(//tmp/**)"
+    ]
+  }
+}
