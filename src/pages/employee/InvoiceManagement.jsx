@@ -4,6 +4,7 @@ import Header from '../../components/Header';
 import DataTable from '../../components/DataTable';
 import FormModal from '../../components/FormModal';
 import { getInvoices, createInvoice, updateInvoice, deleteInvoice, getAutoPolicies, getHomePolicies } from '../../services/api';
+import { normalizeArray } from '../../utils/normalizeArray';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -36,11 +37,15 @@ export default function InvoiceManagement() {
   const [submitting, setSubmitting] = useState(false);
 
   const reload = async () => {
+    console.log('InvoiceManagement mounted');
     try {
-      const [invoices, autoPols, homePols] = await Promise.all([getInvoices(), getAutoPolicies(), getHomePolicies()]);
-      setData(invoices);
-      setAutoPolicies(autoPols);
-      setHomePolicies(homePols);
+      const [invRes, autoPolRes, homePolRes] = await Promise.all([getInvoices(), getAutoPolicies(), getHomePolicies()]);
+      console.log('API response (invoices):', invRes);
+      console.log('API response (auto policies):', autoPolRes);
+      console.log('API response (home policies):', homePolRes);
+      setData(normalizeArray(invRes, 'invoices'));
+      setAutoPolicies(normalizeArray(autoPolRes, 'auto_policies'));
+      setHomePolicies(normalizeArray(homePolRes, 'home_policies'));
     } catch (err) {
       setApiError(err.message);
     } finally {

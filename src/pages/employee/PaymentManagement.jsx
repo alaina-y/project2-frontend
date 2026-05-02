@@ -3,6 +3,7 @@ import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import DataTable from '../../components/DataTable';
 import { getPayments, createPayment, deletePayment, getInvoices } from '../../services/api';
+import { normalizeArray } from '../../utils/normalizeArray';
 
 const inputCls = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
 
@@ -36,10 +37,13 @@ export default function PaymentManagement() {
   const [submitting, setSubmitting] = useState(false);
 
   const reload = async () => {
+    console.log('PaymentManagement mounted');
     try {
-      const [pays, invs] = await Promise.all([getPayments(), getInvoices()]);
-      setPayments(pays);
-      setInvoices(invs);
+      const [paysRes, invsRes] = await Promise.all([getPayments(), getInvoices()]);
+      console.log('API response (payments):', paysRes);
+      console.log('API response (invoices):', invsRes);
+      setPayments(normalizeArray(paysRes, 'payments'));
+      setInvoices(normalizeArray(invsRes, 'invoices'));
     } catch (err) {
       setApiError(err.message);
     } finally {

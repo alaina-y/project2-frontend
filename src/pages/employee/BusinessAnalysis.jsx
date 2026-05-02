@@ -7,6 +7,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
 import { getCustomers, getAutoPolicies, getHomePolicies, getInvoices, getPayments } from '../../services/api';
+import { normalizeArray } from '../../utils/normalizeArray';
 
 const PIE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
 
@@ -64,13 +65,19 @@ export default function BusinessAnalysis() {
   const [payments, setPayments]         = useState([]);
 
   useEffect(() => {
+    console.log('BusinessAnalysis mounted');
     Promise.all([getCustomers(), getAutoPolicies(), getHomePolicies(), getInvoices(), getPayments()])
-      .then(([custs, autoPols, homePols, invs, pays]) => {
-        setCustomers(custs);
-        setAutoPolicies(autoPols);
-        setHomePolicies(homePols);
-        setInvoices(invs);
-        setPayments(pays);
+      .then(([custRes, autoPolRes, homePolRes, invRes, paysRes]) => {
+        console.log('API response (customers):', custRes);
+        console.log('API response (auto policies):', autoPolRes);
+        console.log('API response (home policies):', homePolRes);
+        console.log('API response (invoices):', invRes);
+        console.log('API response (payments):', paysRes);
+        setCustomers(normalizeArray(custRes, 'customers'));
+        setAutoPolicies(normalizeArray(autoPolRes, 'auto_policies'));
+        setHomePolicies(normalizeArray(homePolRes, 'home_policies'));
+        setInvoices(normalizeArray(invRes, 'invoices'));
+        setPayments(normalizeArray(paysRes, 'payments'));
       })
       .catch((err) => setApiError(err.message))
       .finally(() => setLoading(false));
